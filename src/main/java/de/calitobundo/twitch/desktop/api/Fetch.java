@@ -222,12 +222,12 @@ public class Fetch {
 
 
     public static void getBannedUserById(String userId){
-        final String broadcasterId = Context.user.getId();
+        final String broadcasterId = Context.getChannelUser().getId();
         final BannedUserList bannedUsersList = twitchClient.getHelix().getBannedUsers(credential.getAccessToken(), broadcasterId, Collections.singletonList(userId), null, null).execute();
 
     }
     public static List<BannedUser> getBannedUserByIds(List<String> userIds){
-        final String broadcasterId = Context.user.getId();
+        final String broadcasterId = Context.getChannelUser().getId();
         final BannedUserList bannedUsersList = twitchClient.getHelix().getBannedUsers(credential.getAccessToken(), broadcasterId, userIds, null, null).execute();
         return bannedUsersList.getResults();
     }
