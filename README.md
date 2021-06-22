@@ -1,5 +1,7 @@
 Bester Stream! https://www.twitch.tv/einfachuwe42
 
+Application bei twitch dev anmelden client_id client_secret besorgen
+
 QAuthToken erstellen mit folgenden Scopes https://twitchapps.com/tokengen/
 
 channel:read:subscriptions user:read:blocked_users user:edit:follows user:edit:broadcast chat:edit chat:read whispers:read whispers:edit channel:moderate moderation:read channel:manage:broadcast
