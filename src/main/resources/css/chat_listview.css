@@ -1,0 +1,27 @@
+
+
+#chatListView {
+    -fx-selection-bar:  transparent;
+    -fx-selection-bar-non-focused: transparent;
+}
+
+#chat-item-cell {
+
+    -fx-background-color:
+    linear-gradient(#121412, #161616);
+}
+
+#chat-item-cell-empty  {
+
+    -fx-background-color:#161616;
+
+}
+
+
+/* #chatListView {
+        linear-gradient(#686868 0%, #232723 25%, #373837 75%, #757575 100%),
+    linear-gradient(#020b02, #b32828),
+    -fx-background-insets: 0,1;
+
+    -fx-text-fill: rgb(233, 212, 20);
+} */

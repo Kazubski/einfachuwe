@@ -1,0 +1,11 @@
+.chat-message .chat-name {
+    -fx-font-size: 20.0px;
+    -fx-text-fill: red;
+    -fx-fill: rgb(201, 186, 186);
+}
+
+.chat-message .chat-date {
+    -fx-font-size: 20.0px;
+    -fx-text-fill: red;
+    -fx-fill: rgba(124, 122, 122, 255);
+}

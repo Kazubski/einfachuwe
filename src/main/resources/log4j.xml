@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
+	debug="false">
+
+	<appender name="appAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="uwe-twitch-desktop.log" />
+		<param name="Append" value="true" />
+		<param name="Encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.EnhancedPatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p [%c] %m%n" />
+		</layout>
+	</appender>
+
+	<logger name="de.calitobundo">
+		<level value="all" />
+		<appender-ref ref="appAppender" />
+	</logger>
+
+	<logger name="org.hibernate">
+		<level value="info" />
+		<appender-ref ref="appAppender" />
+	</logger>
+
+	<logger name="com.github.twitch4j">
+		<level value="info" />
+		<appender-ref ref="appAppender" />
+	</logger>
+
+	<logger name="com.github.philippheuer">
+		<level value="info" />
+		<appender-ref ref="appAppender" />
+	</logger>
+
+	<logger name="com.netflix">
+		<level value="info" />
+		<appender-ref ref="appAppender" />
+	</logger>
+
+
+
+</log4j:configuration>
