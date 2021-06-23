@@ -10,15 +10,11 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.SimpleTimeZone;
 
 import com.github.twitch4j.helix.domain.BannedUser;
 import com.github.twitch4j.helix.domain.BannedUserList;
-import com.github.twitch4j.helix.domain.BlockedUser;
 import com.github.twitch4j.helix.domain.Follow;
 import com.github.twitch4j.helix.domain.User;
 import com.github.twitch4j.kraken.domain.KrakenUser;
@@ -26,7 +22,6 @@ import com.github.twitch4j.kraken.domain.KrakenUserList;
 
 import de.calitobundo.twitch.desktop.ImageUtils;
 import de.calitobundo.twitch.desktop.api.Context;
-import de.calitobundo.twitch.desktop.api.Fetch;
 import de.calitobundo.twitch.desktop.event.EventHandler;
 import de.calitobundo.twitch.desktop.graph.GraphUtils;
 import javafx.application.Platform;
@@ -60,12 +55,10 @@ public class UserInfoView extends VBox {
     private final ImageView offlineTumbnailImageView = new ImageView();
 
     //info
-    //private final Label viewCountSizeLabel = new Label("viewCount");
     private final Label followFromSizeLabel = new Label("followFrom");
     private final Label followToSizeLabel = new Label("followTo");
     private final Label clipsSizeLabel = new Label("clipsSize");
 
-    //private final Label viewCountSizeLabel2 = new Label();
     private final Label followFromSizeLabel2 = new Label();
     private final Label followToSizeLabel2 = new Label();
     private final Label clipsSizeLabel2 = new Label();
@@ -92,18 +85,11 @@ public class UserInfoView extends VBox {
     private final TextField bannedAtTextField = new TextField("bannedFor");
     private final Button bannedButton = new Button("Ban");
 
-    private final TextArea blockedUsersTextArea = new TextArea("blockedUsers");
-
-    //private final Button videoPlayerButton = new Button("Play");
-    //private VideoPlayer videoPlayer;
-
     private final EventHandler handler;
 
     public UserInfoView(EventHandler handler) {
         this.handler = handler;
 
-        //videoPlayer = new VideoPlayer();
-        
         followFromSizeLabel2.setStyle(Context.cssRedColor);
         followToSizeLabel2.setStyle(Context.cssRedColor);
         clipsSizeLabel2.setStyle(Context.cssRedColor);
@@ -122,7 +108,6 @@ public class UserInfoView extends VBox {
 
         final GridPane infoLayout = new GridPane();
         infoLayout.setVgap(5);
-        //infoLayout.setHgap(5);
         loginLabel.setMinWidth(100);
         infoLayout.add(loginLabel, 0, 0);
         infoLayout.add(loginTextField, 1, 0);
@@ -140,10 +125,6 @@ public class UserInfoView extends VBox {
         infoLayout.add(followedLayout, 1, 6);
         infoLayout.add(bannedAtLabel, 0, 7);
         infoLayout.add(bannedLayout, 1, 7);
-       // infoLayout.add(blockedUsersTextArea, 1, 8, 2, 1);
-
-                //infoLayout.add(videoPlayerButton, 1, 8, 2, 1);
-        //infoLayout.add(videoPlayer, 1, 9, 2, 1);
 
         final HBox sizeLayout = new HBox(followFromSizeLabel, followFromSizeLabel2, followToSizeLabel, followToSizeLabel2, clipsSizeLabel, clipsSizeLabel2);
         sizeLayout.setSpacing(10);

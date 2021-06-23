@@ -213,7 +213,7 @@ public class MainApp extends Application implements EventHandler {
         new Thread(() ->  {
             Context.init(this);
             Context.emoticons.clear();
-            //EmotesData data = DataBunker.loadJsonObject(EmotesData.class);
+            //EmotesData data = PersistData.loadJsonObject(EmotesData.class);
             //Context.emoticons.addAll(data.getList());
             Platform.runLater(() -> {
                 joinChannel("einfachuwe42");

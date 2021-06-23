@@ -1,6 +1,5 @@
 package de.calitobundo.twitch.desktop.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.twitch4j.TwitchClient;
 import com.github.twitch4j.TwitchClientBuilder;
@@ -10,7 +9,6 @@ import com.github.twitch4j.kraken.domain.SimpleEmoticon;
 import de.calitobundo.twitch.desktop.audio.AudioFile;
 import de.calitobundo.twitch.desktop.config.Configuration;
 import de.calitobundo.twitch.desktop.data.PersistData;
-import de.calitobundo.twitch.desktop.data.IgnoredUserData;
 import de.calitobundo.twitch.desktop.event.EventHandler;
 import de.calitobundo.twitch.desktop.event.EventService;
 import de.calitobundo.twitch.desktop.views.ChatListView;
@@ -30,10 +28,6 @@ public class Context {
     public static final SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     private static EventService service;
-    public static final String HOME_CHANNEL = "einfachuwe42";
-    public static String CURRENT_CHANNEL = HOME_CHANNEL;
-
-    //public static IgnoredUserData ignoredUserData = new IgnoredUserData();
 
     public static final Image liveImage;
     public static final Image notLiveImage;
@@ -80,15 +74,26 @@ public class Context {
 
     private Context(){}
 
-    //channeluser
-    private static User user = null;
+    public static String home_channel, current_channel;
+    private static User channelUser = null;
+    private static User homeUser = null;
 
-    public static User setChannelUser(String channelName){
-        return user = Fetch.fetchUserByName(channelName);
+    public static User setChannelUser(String channelUserName){
+        current_channel = channelUserName;
+        return channelUser = Fetch.fetchUserByName(channelUserName);
     }
     public static User getChannelUser(){
-        return user;
+        return channelUser;
     }
+
+    public static User setHomeUser(String homeUserName){
+        home_channel = homeUserName;
+        return homeUser = Fetch.fetchUserByName(homeUserName);
+    }
+    public static User getHomeUser(){
+        return homeUser;
+    }
+
 
     // emotes
     public static void loadEmoticons(){
@@ -99,6 +104,9 @@ public class Context {
     public static void init(EventHandler handler){
 
         PersistData.init();
+
+        home_channel = Configuration.getValue(Configuration.CHANNEL_NAME);
+        current_channel = home_channel;
 
         credential = new OAuth2Credential(Configuration.IDENTITY_PROVIDER, Configuration.getValue(Configuration.O_AUTH));
 

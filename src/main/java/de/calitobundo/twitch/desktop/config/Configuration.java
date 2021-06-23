@@ -20,12 +20,9 @@ public final class Configuration {
 	public static final String CHANNEL_NAME = "CHANNEL_NAME";
 
 	static {
-
 		try {
-
 			InputStream dd = Configuration.class.getClassLoader().getResourceAsStream("twitch.txt");
 			Scanner scanner = new Scanner(dd);
-
 			while (scanner.hasNextLine()) {
 				String[] pair = scanner.nextLine().split("=");
 				map.put(pair[0], pair[1]);

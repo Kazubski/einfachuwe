@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,7 +15,6 @@ public class PersistData {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static <T> T loadJsonObject(Class<T> clazz){
-
         T data = null;
         try {
             File file = getFileFromClass(clazz);
@@ -31,14 +29,11 @@ public class PersistData {
     }
 
     public static void saveJsonObject(Object object, Class<?> clazz){
-        
         try {
-
             String string = mapper.writeValueAsString(object);
             File file = getFileFromClass(clazz);
             Files.writeString(file.toPath(), string, StandardCharsets.UTF_8);
             System.out.println("Datei "+file.getPath()+" geschrieben!");
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -54,11 +49,12 @@ public class PersistData {
 
     /**
      * 
-     * 
-     * 
+     * IgnoredUserData and RemovedUserData
      * 
      */
 
+    public static IgnoredUserData ignoredUserData = new IgnoredUserData();
+    public static RemovedUserData removedUserData = new RemovedUserData();
 
     public static void init(){
         ignoredUserData = PersistData.loadJsonObject(IgnoredUserData.class);
@@ -73,37 +69,25 @@ public class PersistData {
         }
     }
 
-
-    public static IgnoredUserData ignoredUserData = new IgnoredUserData();
-    public static RemovedUserData removedUserData = new RemovedUserData();
-
     public static void addToIgnoredUserAndSave(String name) {
-        
-        List<String> ignoredUsers = ignoredUserData.getList();
-
-        if(ignoredUsers.contains(name)){
-            System.out.println(name+" ist bereits in der ignoreliste!");
-        }else{
-            ignoredUsers.add(name);
-            //IgnoredUserData ignoredUserData = new IgnoredUserData(ignoredUsers);
+        final List<String> ignoredUsers = ignoredUserData.getList();
+        if(ignoredUsers.add(name)){
             PersistData.saveJsonObject(ignoredUserData, IgnoredUserData.class);
             System.out.println(name+" in die ignoreliste hinzugefügt!");
+        }else{
+            System.out.println(name+" ist bereits in der ignoreliste!");
         }
     }
 
     public static void removeFromIgnoredUserAndSave(String name) {
-
-        List<String> ignoredUsers = ignoredUserData.getList();
-
+        final List<String> ignoredUsers = ignoredUserData.getList();
         if(ignoredUsers.remove(name)) {
             System.out.println(name + " aus der ignoreliste entfernt!");
-            //IgnoredUserData ignoredUserData = new IgnoredUserData(ignoredUsers);
             PersistData.saveJsonObject(ignoredUserData, IgnoredUserData.class);
         }else {
             System.out.println(name + " nicht in der ignoreliste gefunden!");
         }
     }
-
 
     public static boolean ignored(String string){
         return ignoredUserData.contains(string);
@@ -112,12 +96,6 @@ public class PersistData {
     public static boolean removed(String string){
         return removedUserData.contains(string);
     }
-
-    // public static List<String> getIgnoredUsers() {
-    //     return ignoredUserData.getList();
-    // }
-
-
 
     static{
 
@@ -133,10 +111,7 @@ public class PersistData {
         ignoredUsers.add("mslenity");
         ignoredUsers.add("thecommandergroot");
         ignoredUsers.add("commanderroot");
-        ignoredUsers.add("eyeresponse");
-        ignoredUsers.add("einfachuwe42");
         ignoredUsers.add("aten");
-        ignoredUsers.add("josefsknigge");
         ignoredUsers.add("dinu");
         ignoredUsers.add("isnicable");
         ignoredUsers.add("skumshop");

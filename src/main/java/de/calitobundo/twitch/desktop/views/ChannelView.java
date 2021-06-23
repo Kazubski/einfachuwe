@@ -1,18 +1,13 @@
 package de.calitobundo.twitch.desktop.views;
 
-import static de.calitobundo.twitch.desktop.api.Context.twitchClient;
 import static de.calitobundo.twitch.desktop.api.Fetch.getChannelBadges;
 
 import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
 import com.github.twitch4j.tmi.domain.Badge;
 import com.github.twitch4j.tmi.domain.BadgeSets;
-import com.github.twitch4j.tmi.domain.Chatters;
 
 import de.calitobundo.twitch.desktop.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
@@ -21,8 +16,6 @@ import javafx.scene.layout.VBox;
 
 
 public class ChannelView extends VBox {
-
-    //private static final SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
 
     // channel
     private final Button toggleUserListView = new Button("Hide Userlist");
