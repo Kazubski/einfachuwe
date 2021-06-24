@@ -19,7 +19,6 @@ import de.calitobundo.twitch.desktop.api.Context;
 import de.calitobundo.twitch.desktop.api.Fetch;
 import de.calitobundo.twitch.desktop.api.FollowUtils;
 import de.calitobundo.twitch.desktop.dto.FollowItem;
-import de.calitobundo.twitch.desktop.dto.UserItem;
 import de.calitobundo.twitch.desktop.event.EventHandler;
 import de.calitobundo.twitch.desktop.graph.GraphUser;
 import javafx.application.Platform;
@@ -54,9 +53,6 @@ public class UserFollowListView extends HBox {
 
     private final ObservableList<FollowItem> observableTo = FXCollections.observableArrayList();
     private final ListView<FollowItem> toListView = new ListView<>(observableTo);
-
-
-    private final Button button = new Button("Test");
     
     private final EventHandler handler;
 
@@ -87,10 +83,7 @@ public class UserFollowListView extends HBox {
         box.setSpacing(10);
         VBox.setVgrow(box, Priority.ALWAYS);
 
-        VBox box2 = new VBox(button, box);
-        box2.setSpacing(10);
-
-        getChildren().addAll(box2);
+        getChildren().addAll(box);
         setSpacing(10);
         setPadding(new Insets(10, 0, 0, 0));
 
@@ -231,13 +224,9 @@ public class UserFollowListView extends HBox {
 
 
     private void changedFollowFrom(String userName, String userId){
-
         new Thread(() -> {
-
             final FollowList followerList = twitchClient().getHelix().getFollowers(credential.getAccessToken(), userId, null, null, 100).execute();
-            
-            List<FollowItem> followItems = FollowUtils.mapToFollowItemsFrom(followerList.getFollows());
-            
+            final List<FollowItem> followItems = FollowUtils.mapToFollowItemsFrom(followerList.getFollows());
             Platform.runLater(() -> {
                 observableFrom.addAll(followItems);
                 fromTotalLable.setText(followerList.getTotal()+" from "+userName);
@@ -250,13 +239,9 @@ public class UserFollowListView extends HBox {
 
 
     private void changedFollowTo(String userName, String userId) {
-
         new Thread(() -> {
-
             final FollowList followerList = twitchClient().getHelix().getFollowers(credential.getAccessToken(), null, userId, null, 100).execute();
-
-            List<FollowItem> followItems = FollowUtils.mapToFollowItemsTo(followerList.getFollows());
-
+            final List<FollowItem> followItems = FollowUtils.mapToFollowItemsTo(followerList.getFollows());
             Platform.runLater(() -> {
                 observableTo.addAll(followItems);
                 toTotalLable.setText(followerList.getTotal()+" to "+userName);

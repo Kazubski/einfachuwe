@@ -26,10 +26,6 @@ public class Fetch {
         StreamList list = twitchClient.getHelix()
                 .getStreams(credential.getAccessToken(), null, null, null, null, null, null, channelNames).execute();
         return list.getStreams();
-//        if(list.getStreams()!=null && !list.getStreams().isEmpty()) {
-//            return list.getStreams();
-//        }
-//        return null;
     }
 
     public static Optional<Stream> fetchStreamInfoOptional(String channelName){
@@ -38,12 +34,6 @@ public class Fetch {
                 .execute()
                 .getStreams()
                 .stream().findFirst();
-
-
-        // if(list.getStreams()!=null && !list.getStreams().isEmpty()) {
-        //     return list.getStreams().get(0);
-        // }
-        // return null;
     }
 
     public static Stream fetchStreamInfo(String channelName){
@@ -149,15 +139,11 @@ public class Fetch {
     }
 
     public static List<Stream> fetchAllStreamsByUserIds(String cursor, List<Stream> streams, List<String> userIds){
-
         StreamList streamList = Context.twitchClient.getHelix().getStreams(Context.credential.getAccessToken(), null, null, 100, null, null, userIds, null).execute();
         streams.addAll(streamList.getStreams());
         if(streamList.getPagination().getCursor() != null)
             fetchAllStreamsByUserIds(streamList.getPagination().getCursor(), streams, userIds);
-    
         return streams;
-    
-    
     }
 
     public static List<BlockedUser> blockedUsers(ProgressEvent event, String cursor, List<BlockedUser> list, String userId, TwitchClient twitchClient, OAuth2Credential credential){
@@ -172,32 +158,23 @@ public class Fetch {
 
 
     public static List<Stream> fetchAllStreamsFromFollowByUserName(FetchEvent event, String cursor, List<Stream> streams, User fromUser){
-
         FollowList follows = twitchClient.getHelix().getFollowers(credential.getAccessToken(), fromUser.getId(), null, cursor, 100).execute();
         final List<String> userIds = follows.getFollows().stream().map(follow -> follow.getToId()).collect(Collectors.toList());
         streams.addAll(fetchAllStreamsByUserIds(null, new ArrayList<>(), userIds));
-
         if(event != null)
             event.onFetch(streams.size(), follows.getTotal());
 
         if(follows.getPagination().getCursor() != null)
             fetchAllStreamsFromFollowByUserName(event, follows.getPagination().getCursor(), streams, fromUser);
-        
         return streams;
     }
 
-
-
-
-
     public static List<UserItem> getChatters(String channelName, List<String> ignored){
-
         final Chatters chatters = twitchClient.getMessagingInterface().getChatters(channelName).execute();
         if(chatters == null)
             System.out.println("getChatters(String channelName, List<String> ignored) null");
         final List<String> allViewers = chatters.getAllViewers();
         final List<UserItem> items = new ArrayList<>();
-              
         allViewers.forEach(userName -> {
             final UserItem item = new UserItem(userName, ignored.contains(userName));
             items.add(item);
@@ -206,18 +183,13 @@ public class Fetch {
     }
 
     public static BadgeSets getChannelBadges(String channelName){
-
         User user = fetchUserByName(channelName);
         BadgeSets badgeSets = Context.twitchClient.getMessagingInterface().getChannelBadges(user.getId(), "de").execute();
-
-       return badgeSets;
-
+        return badgeSets;
     }
 
     public static EmoticonList getAllChatEmoticons(){
-
        return Context.twitchClient.getKraken().getAllChatEmoticons().execute();
-
     }
 
 

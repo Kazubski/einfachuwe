@@ -83,7 +83,11 @@ public class Context {
         return channelUser = Fetch.fetchUserByName(channelUserName);
     }
     public static User getChannelUser(){
-        return channelUser;
+        if(channelUser == null){
+            return channelUser = Fetch.fetchUserByName(current_channel);
+        }else{
+            return channelUser;
+        }
     }
 
     public static User setHomeUser(String homeUserName){
@@ -91,7 +95,11 @@ public class Context {
         return homeUser = Fetch.fetchUserByName(homeUserName);
     }
     public static User getHomeUser(){
-        return homeUser;
+        if(homeUser == null){
+            return homeUser = Fetch.fetchUserByName(home_channel);
+        }else{
+            return homeUser;
+        }
     }
 
 
@@ -120,7 +128,7 @@ public class Context {
                 .withChatAccount(credential)
                 .build();
 
-        ChatListView.badgesSet = Fetch.getChannelBadges("einfachuwe42");
+        ChatListView.badgesSet = Fetch.getChannelBadges(current_channel);
             // badgesSet.getBadgesByName().forEach((k,v) -> { 
             //     System.out.println(k+" / "+v);
             //     v.getVersions().forEach((k2,v2) -> {

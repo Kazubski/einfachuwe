@@ -206,7 +206,7 @@ public class MainApp extends Application implements EventHandler {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("ShutdownHook");
             channelInformationView.stop();
-            userInfoView.stop();
+            //userInfoView.stop();
             Context.close();
         }));
 
@@ -253,6 +253,7 @@ public class MainApp extends Application implements EventHandler {
                 return;
             }
             channelInformationView.start();
+            ChatListView.badgesSet = Fetch.getChannelBadges("einfachuwe42");
             final List<UserItem> items = Fetch.getChatters(channelName, PersistData.ignoredUserData.getList());
             Platform.runLater(() -> {
                 stage.setTitle("Uwe Twitch Desktop ("+channelName+")");

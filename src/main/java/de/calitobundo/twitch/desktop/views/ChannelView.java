@@ -65,8 +65,6 @@ public class ChannelView extends VBox {
         chatInputs.getChildren().addAll(chatTextField, chatButton, clearChatButton, byeButton);
         HBox.setHgrow(chatTextField, Priority.ALWAYS);
 
-
-
         // final HBox logInputs = new HBox();
         // logInputs.setSpacing(10);
         // logInputs.getChildren().addAll(clearButton, button);
@@ -127,14 +125,14 @@ public class ChannelView extends VBox {
             chatListView.setSize(size);
         });
 
-        testButton.setOnAction(e -> {
-            BadgeSets badges = getChannelBadges("einfachuwe42");
-            Badge bs = badges.getSubscriberBadgeSet().get().getVersions().get("0");
-            badges.getBadgesByName().forEach((k,v) -> {
-                System.out.println(k);
-            });
-            System.out.println(bs);
-        });
+        // testButton.setOnAction(e -> {
+        //     BadgeSets badges = getChannelBadges("einfachuwe42");
+        //     Badge bs = badges.getSubscriberBadgeSet().get().getVersions().get("0");
+        //     badges.getBadgesByName().forEach((k,v) -> {
+        //         System.out.println(k);
+        //     });
+        //     System.out.println(bs);
+        // });
 
         toggleUserListView.setOnAction(e -> {
             handler.showUserListView(true);

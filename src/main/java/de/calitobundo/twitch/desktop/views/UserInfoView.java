@@ -85,10 +85,7 @@ public class UserInfoView extends VBox {
     private final TextField bannedAtTextField = new TextField("bannedFor");
     private final Button bannedButton = new Button("Ban");
 
-    private final EventHandler handler;
-
     public UserInfoView(EventHandler handler) {
-        this.handler = handler;
 
         followFromSizeLabel2.setStyle(Context.cssRedColor);
         followToSizeLabel2.setStyle(Context.cssRedColor);
@@ -165,19 +162,21 @@ public class UserInfoView extends VBox {
         setPadding(new Insets(10, 0, 0, 0));
 
         followButton.setOnAction(e -> {
-            final User fromUser = fetchUserByName("einfachuwe42");
-            final String userName = loginTextField.getText();
-            final User toUser = fetchUserByName(userName);
-            if (fromUser == null || toUser == null)
+            final User homeUser = Context.getHomeUser();
+            final String toUserName = loginTextField.getText();
+            final User toUser = fetchUserByName(toUserName);
+            if (homeUser == null || toUser == null){
+                System.out.println("Einen User nicht gefunden! homeUser:"+homeUser.getLogin()+" toUser:"+toUser.getLogin());
                 return;
-            if (fromUser.getId().equals(toUser.getId())) {
-                System.out.println("fromId == toId");
+            }
+            if (homeUser.getId().equals(toUser.getId())) {
+                System.out.println("fromId == toId Kannst dich nicht selbst folgen!");
                 return;
             }
             followButton.setDisable(true);
             if (followButton.getText().equals("Follow")) {
                 new Thread(() -> {
-                    twitchClient.getHelix().createFollow(credential.getAccessToken(), fromUser.getId(), toUser.getId(), false).execute();
+                    twitchClient.getHelix().createFollow(credential.getAccessToken(), homeUser.getId(), toUser.getId(), true).execute();
                     Platform.runLater(() -> {
                         followButton.setDisable(false);
                         followButton.setText("Unfollow");
@@ -185,7 +184,7 @@ public class UserInfoView extends VBox {
                 }).start();
             } else {
                 new Thread(() -> {
-                    twitchClient.getHelix().deleteFollow(credential.getAccessToken(), fromUser.getId(), toUser.getId()).execute();
+                    twitchClient.getHelix().deleteFollow(credential.getAccessToken(), homeUser.getId(), toUser.getId()).execute();
                     Platform.runLater(() -> {
                         followButton.setDisable(false);
                         followButton.setText("Follow");
@@ -195,25 +194,29 @@ public class UserInfoView extends VBox {
         });
 
         timeoutButton.setOnAction(e -> {
+            final User channelUser = Context.getChannelUser();
             final String userName = loginTextField.getText();
             if (timeoutButton.getText().equals("Timeout")) {
-                twitchClient.getChat().sendMessage("einfachuwe42", "/timeout " + userName + " 5");
+                twitchClient.getChat().sendMessage(channelUser.getLogin(), "/timeout " + userName + " 5");
                 timeoutButton.setText("Untimeout");
             } else {
-                twitchClient.getChat().sendMessage("einfachuwe42", "/untimeout " + userName);
+                twitchClient.getChat().sendMessage(channelUser.getLogin(), "/untimeout " + userName);
                 timeoutButton.setText("Timeout");
             }
             fetchUserB(userName);
         });
 
         banButton.setOnAction(e -> {
+            final User channelUser = Context.getChannelUser();
             final String userName = loginTextField.getText();
             if (banButton.getText().equals("Ban")) {
-                twitchClient.getChat().sendMessage("einfachuwe42", "/ban " + userName);
+                twitchClient.getChat().sendMessage(channelUser.getLogin(), "/ban " + userName);
                 banButton.setText("Unban");
+                bannedButton.setText("Unban");
             } else {
-                twitchClient.getChat().sendMessage("einfachuwe42", "/unban " + userName);
+                twitchClient.getChat().sendMessage(channelUser.getLogin(), "/unban " + userName);
                 banButton.setText("Ban");
+                bannedButton.setText("Ban");
             }
             fetchUserB(userName);
         });
@@ -227,51 +230,32 @@ public class UserInfoView extends VBox {
             }
         });
 
-        // videoPlayerButton.setOnAction(e -> {
-        //     final String userName = loginTextField.getText();
-        //     videoPlayer.start(userName);
-        // });
-
-        followDeleteButton.setOnAction(e -> {
-            final String fromId = user.getId();
-            final String toId = Context.getChannelUser().getId();
-            Context.twitchClient.getHelix().deleteFollow(Context.credential.getAccessToken(), fromId, toId).execute();
-            System.out.println("followDeleteButton fromId: "+fromId+" toId:"+toId);
-            fetchUserFollows(user);
-
-            // blockedUsersTextArea.clear();
-            // new Thread(() -> {
-            //     List<BlockedUser> blockedUsers = Fetch.blockedUsers((size, total) -> {
-            //         System.out.println("size: "+size);
-            //     }, null, new ArrayList<>(), toId, twitchClient, credential);
-            //     Platform.runLater(() -> {
-            //         blockedUsers.forEach(user -> {
-            //             blockedUsersTextArea.appendText(user.getUserLogin()+"\n");
-            //         });
-            //     });
-            // }).start();
-        });
-
         bannedButton.setOnAction(e -> {
+            final User channelUser = Context.getChannelUser();
             final String userName = loginTextField.getText();
             if (banButton.getText().equals("Ban")) {
-                twitchClient.getChat().sendMessage("einfachuwe42", "/ban " + userName);
+                twitchClient.getChat().sendMessage(channelUser.getLogin(), "/ban " + userName);
                 banButton.setText("Unban");
                 bannedButton.setText("Unban");
             } else {
-                twitchClient.getChat().sendMessage("einfachuwe42", "/unban " + userName);
+                twitchClient.getChat().sendMessage(channelUser.getLogin(), "/unban " + userName);
                 banButton.setText("Ban");
                 bannedButton.setText("Ban");
             }
             fetchUserB(userName);
         });
 
+        // followDeleteButton.setOnAction(e -> {
+        //     final String fromId = infoUser.getId();
+        //     final String toId = Context.getChannelUser().getId();
+        //     Context.twitchClient.getHelix().deleteFollow(Context.credential.getAccessToken(), fromId, toId).execute();
+        //     System.out.println("followDeleteButton fromId: "+fromId+" toId:"+toId);
+        //     fetchUserFollows(infoUser);
+        // });
     }
 
-    private User user = null;
     
     public void loadUser(User user) {
-        this.user = user;
         fetchUserDetails(user);
     }
 
@@ -334,7 +318,7 @@ public class UserInfoView extends VBox {
                         final Instant nowInstant = Instant.now();
                         final Duration between = Duration.between(createdInstant, nowInstant);
                         final long hours = between.toHours();
-                        if(hours < 24){
+                        if(hours < 24*7){
                             createdAtTextField.setStyle("-fx-text-fill: rgba(252, 3, 3, 255);");
                         }else{
                             createdAtTextField.setStyle("-fx-text-fill: rgba(255, 255, 255, 255);");
@@ -353,9 +337,7 @@ public class UserInfoView extends VBox {
 
 
     public void deleteFollow(String fromId, String toId){
-
         Context.twitchClient.getHelix().deleteFollow(Context.credential.getAccessToken(), fromId, toId);
-
         //Context.twitchClient.getHelix().blockUser(Context.credential.getAccessToken(), targetUserId, sourceContext, reason)
         // Context.twitchClient.getHelix().getUserBlockList(Context.credential.getAccessToken(), userId, after, limit);
         // Context.twitchClient.getHelix().getBannedUsers(authToken, broadcasterId, userId, after, before);
@@ -363,20 +345,14 @@ public class UserInfoView extends VBox {
         // Context.twitchClient.getChat().unban(channel, user, reason)
         // Context.twitchClient.getChat().setSubscribersOnly(channel, user, reason)
         // Context.twitchClient.getChat().setFollowersOnly(channel, time);
-
     }
 
 
     private void fetchUserFollows(User user) {
-
         new Thread(() -> {
-
-            // is user following einfachuwe42
-            //final User user1 = fetchUserByName("einfachuwe42");
-            final User user1 = Context.getChannelUser();
-            //if(user == null || user1 == null)
-            //    return;
-            final Follow follow = fetchFollowByIds(user.getId(), user1.getId());
+            final User channelUser = Context.getChannelUser();
+            // is infoUser following channelUser
+            final Follow follow = fetchFollowByIds(user.getId(), channelUser.getId());
             if(follow == null) {
                 Platform.runLater(() -> {
                     followedAtTextField.clear();
@@ -388,9 +364,8 @@ public class UserInfoView extends VBox {
                     followedAtTextField.setText(formattedDate);
                 });
             }
-
-            // is einfachuwe42 following user
-            final Follow follow1 = fetchFollowByIds(user1.getId(), user.getId());
+            // is channelUser following infoUser
+            final Follow follow1 = fetchFollowByIds(channelUser.getId(), user.getId());
             if(follow1 == null) {
                 Platform.runLater(() -> {
                     followButton.setText("Follow");
@@ -400,7 +375,6 @@ public class UserInfoView extends VBox {
                     followButton.setText("Unfollow");
                 });
             }
-
         }).start();
     }
     
@@ -409,11 +383,12 @@ public class UserInfoView extends VBox {
 
         new Thread(() -> {
             // is user banned
-            final User user1 = fetchUserByName("einfachuwe42");
-            if(user == null || user1 == null)
+            final User homeUser = Context.getHomeUser();
+            //final User broadcasterUser = fetchUserByName("einfachuwe42");
+            if(user == null || homeUser == null)
                 return;
-            final String bId = user1.getId();
-            final BannedUserList bannedUsersList = twitchClient.getHelix().getBannedUsers(credential.getAccessToken(), bId, Collections.singletonList(user.getId()), null, null).execute();
+            final String broadcasterId = homeUser.getId();
+            final BannedUserList bannedUsersList = twitchClient.getHelix().getBannedUsers(credential.getAccessToken(), broadcasterId, Collections.singletonList(user.getId()), null, null).execute();
             if(bannedUsersList.getResults() != null && !bannedUsersList.getResults().isEmpty()){
 
                 final BannedUser bannedUser = bannedUsersList.getResults().get(0);
@@ -435,7 +410,6 @@ public class UserInfoView extends VBox {
                         banButton.setText("Ban");
                         bannedButton.setText("Ban");
                         bannedAtTextField.setText(GraphUtils.getTimeAgo(delta.toEpochMilli()));
-                        //bannedAtTextField.setText(formatter.format(Date.from(delta)));
                     });
                 }
             }else{
@@ -464,8 +438,5 @@ public class UserInfoView extends VBox {
 
     }
 
-    public void stop(){
-       // videoPlayer.close();;
-    }
 
 }

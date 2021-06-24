@@ -51,16 +51,12 @@ public class UserChannelView extends VBox {
 
     private final TextArea chattersTextArea = new TextArea("chatters");
 
-    private final EventHandler handler;
-
     public  UserChannelView(EventHandler handler){
-        this.handler = handler;
 
         final GridPane streamLayout = new GridPane();
         VBox.setVgrow(streamLayout, Priority.ALWAYS);
 
         streamLayout.setVgap(5);
-        //streamLayout.setHgap(5);
         isLiveLabelLabel.setMinWidth(100);
         streamLayout.add(isLiveLabelLabel, 0, 0);
         streamLayout.add(isLiveTextField, 1, 0);
@@ -96,9 +92,6 @@ public class UserChannelView extends VBox {
         setPadding(new Insets(10, 0, 0, 0));
 
         GridPane.setVgrow(chattersTextArea, Priority.ALWAYS);
-
-
-
     }
 
 
@@ -108,22 +101,20 @@ public class UserChannelView extends VBox {
         fetchUserStreamTags(user);
         fetchChatters(user);
 
-            new Thread(() -> {
-                final Stream stream = Fetch.fetchStreamInfo(user.getLogin());
-
-                if(stream == null){
-                    Platform.runLater(() -> {
-                        viewerCountTextField.setText("");
-                    });
-                }else{
-                    Platform.runLater(() -> {
-                        //stream.getViewerCount();
-                        //stream.getUptime();
-                        viewerCountTextField.setText(String.valueOf(stream.getViewerCount()));
-
-                    });
-                }
-            }).start();
+        new Thread(() -> {
+            final Stream stream = Fetch.fetchStreamInfo(user.getLogin());
+            if(stream == null){
+                Platform.runLater(() -> {
+                    viewerCountTextField.setText("");
+                });
+            }else{
+                Platform.runLater(() -> {
+                    //stream.getViewerCount();
+                    //stream.getUptime();
+                    viewerCountTextField.setText(String.valueOf(stream.getViewerCount()));
+                });
+            }
+        }).start();
     }
     
 
@@ -141,28 +132,20 @@ public class UserChannelView extends VBox {
                     //stream.getThumbnailUrl();
                     //stream.getDisplayName();
                     //stream.getGameId();
-                    //liveTumbnailImageView.setImage(new Image(channelSearchResult.getThumbnailUrl(), 96, 96, false, false));
-
                     isLiveTextField.setText(String.valueOf(channelSearchResult.getIsLive()));
-
                     if (channelSearchResult.getStartedAt() != null) {
-
                         final Date myDate = Date.from(channelSearchResult.getStartedAt());
                         final String formattedDate = formatter.format(myDate);
                         startedAtTextField.setText(formattedDate);
-                        //liveImageView.setImage(Context.liveImage);
 
                     }else{
                         startedAtTextField.setText("Innerhalb der letzen 6 Monaten");
-                        //liveImageView.setImage(Context.notLiveImage);
                     }
                 });
             }else{
                 Platform.runLater(() -> {
                     startedAtTextField.clear();
                     isLiveTextField.clear();
-
-                    //liveTumbnailImageView.setImage(null);
                 });
             }
         }).start();
@@ -180,10 +163,8 @@ public class UserChannelView extends VBox {
                 Platform.runLater(() -> {
                     languageTextField.setText(info.getBroadcasterLanguage());
                     gameNameTextField.setText(info.getGameName());
-
                     String resultString = info.getTitle().replaceAll(Context.regexLabel, "");
                     titleTextArea.setText(resultString);
-                    //titleTextArea.setText(info.getTitle().replace("\n", ""));
                 });
             }else{
                 Platform.runLater(() -> {
@@ -228,18 +209,14 @@ public class UserChannelView extends VBox {
     }
 
     public static class Utils {
-
         public static void getChatters(CallMe<Chatters> callme, User user){
-
             new Thread(() -> {
                 final Chatters chatters = Context.twitchClient.getMessagingInterface().getChatters(user.getLogin()).execute();
                 Platform.runLater(() -> {
                     callme.weiter(chatters);
                 });
-    
             }).start();
         }
-
     }
 
     @FunctionalInterface
