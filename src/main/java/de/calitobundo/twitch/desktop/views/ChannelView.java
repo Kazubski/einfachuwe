@@ -116,13 +116,17 @@ public class ChannelView extends VBox {
         });
 
         fontSizeButton.setOnAction(e -> {
-            int size = Integer.parseInt(fontSizeTextField.getText());
-            if(size < 6)
-                size = 6;
-            if(size > 100)
-                size = 100;
-            fontSizeTextField.setText(String.valueOf(size));
-            chatListView.setSize(size);
+            try {
+                int size = Integer.parseInt(fontSizeTextField.getText());
+                if(size < 6)
+                    size = 6;
+                if(size > 100)
+                    size = 100;
+                fontSizeTextField.setText(String.valueOf(size));
+                chatListView.setSize(size);
+            } catch (Exception e2) {
+                System.out.println("fontSizeTextField: "+e2.getMessage());
+            }
         });
 
         // testButton.setOnAction(e -> {
