@@ -197,7 +197,7 @@ public class MainApp extends Application implements EventHandler {
         stage.setScene(scene);
         stage.setTitle("Uwe Twitch Desktop");
         stage.getIcons().add(Context.liveImage);
-		stage.setX(1920);
+		stage.setX(0);
 		stage.setY(0);
 		stage.setMinWidth(WIDTH);
         stage.setMinHeight(HEIGHT-100);
@@ -215,8 +215,9 @@ public class MainApp extends Application implements EventHandler {
             Context.emoticons.clear();
             //EmotesData data = PersistData.loadJsonObject(EmotesData.class);
             //Context.emoticons.addAll(data.getList());
+            
             Platform.runLater(() -> {
-                joinChannel("einfachuwe42");
+                joinChannel(Context.current_channel);
             });
         }).start();
 

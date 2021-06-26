@@ -6,16 +6,18 @@ public class Test {
 
 
 
-        final String url = "https://clips-media-assets2.twitch.tv/AT-cm%7C845011455-preview-480x272.jpg";
 
 
-        final String suffix = "-preview-480x272.jpg";
-        final String replace = ".mp4";
+        // final String url = "https://clips-media-assets2.twitch.tv/AT-cm%7C845011455-preview-480x272.jpg";
 
-        final int index = url.indexOf("-preview");
 
-        final String test = url.substring(0, index);
-        System.out.println(test);
+        // final String suffix = "-preview-480x272.jpg";
+        // final String replace = ".mp4";
+
+        // final int index = url.indexOf("-preview");
+
+        // final String test = url.substring(0, index);
+        // System.out.println(test);
 
         //https://clips-media-assets2.twitch.tv/39575898972-offset-1622.mp4
         //https://clips-media-assets2.twitch.tv/39575898972-offset-1622-preview-480x272.jpg
